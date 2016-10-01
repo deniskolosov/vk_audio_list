@@ -8,7 +8,7 @@ from flask_login import current_user
 from flask.helpers import flash
 
 
-from app import app, db, VK_API_AUDIO_URL, UPDATE_TIME
+from app import flask_app, db, VK_API_AUDIO_URL, UPDATE_TIME
 from app import oauth, login_manager, VK_APP_ID, VK_APP_SECRET, VK_AUTHORIZE_URL
 from app.models import User, Audio
 
@@ -32,14 +32,14 @@ def load_user(user_id):
     return User.query.get(user_id)
 
 
-@app.cli.command()
+@flask_app.cli.command()
 def initdb():
     """Creates the database tables."""
     db.create_all()
     print('Initialized the database.')
 
 
-@app.teardown_appcontext
+@flask_app.teardown_appcontext
 def shutdown_session(exception=None):
     db.session.remove()
 

@@ -1,12 +1,12 @@
 from flask_login import current_user, login_user, login_required, logout_user
 from flask import flash, redirect, render_template, url_for
 
-from app import app, VK_CALLBACK_URL
+from app import flask_app, VK_CALLBACK_URL
 from app.application import db, get_and_save_user_audios, vk
 from app.models import User
 
 
-@app.route('/')
+@flask_app.route('/')
 def index():
     print('he')
     audios = None
@@ -17,19 +17,19 @@ def index():
     return render_template('index.html', audios=audios)
 
 
-@app.route('/login')
+@flask_app.route('/login')
 def login():
     return vk.authorize(callback=VK_CALLBACK_URL)
 
 
-@app.route("/logout")
+@flask_app.route("/logout")
 @login_required
 def logout():
     logout_user()
     return redirect(url_for('index'))
 
 
-@app.route('/vk')
+@flask_app.route('/vk')
 def vk_authorized():
     next_url = url_for('index')
     resp = vk.authorized_response()
