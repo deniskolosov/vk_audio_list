@@ -74,7 +74,7 @@
                         <ul class="list-group">
                             {% for a in audios  %}
                                 <li class="list-group-item">
-                                    <span class="audio-link" id="{{ a['vk_audio_id'] }}">
+                                    <span class="audio-link" id="{{ a['vk_audio_id'] or a['id'] }}">
                                         {{  a['artist'] }} - {{ a['title'] }}
                                     </span>
                                 </li>

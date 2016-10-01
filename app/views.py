@@ -8,14 +8,13 @@ from app.models import User
 
 @flask_app.route('/')
 def index():
-    audios = None
-    token = None
     if current_user.is_authenticated:
         audios = User.query.get(current_user.id).audios
         token = current_user.vk_access_token
         if not audios:
             audios = get_and_save_user_audios(current_user.external_id, token)
-    return render_template('index.html', audios=audios, token=token)
+            return render_template('index.html', audios=audios, token=token)
+    return render_template('index.html')
 
 
 @flask_app.route('/login')

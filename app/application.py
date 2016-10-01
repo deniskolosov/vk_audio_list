@@ -92,7 +92,6 @@ def get_and_save_user_audios(external_id, vk_access_token, create=True):
             db.session.add(audio)
 
         db.session.commit()
-    if create:
         scheduler.enter(UPDATE_TIME, 1, update_user_audio, (external_id, vk_access_token))
         t = threading.Thread(target=scheduler.run, daemon=True)
         t.start()
