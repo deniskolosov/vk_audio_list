@@ -24,6 +24,7 @@ class User(db.Model, UserMixin):
 class Audio(db.Model):
     __tablename__ = 'audios'
     id = db.Column(Integer, primary_key=True)
+    vk_audio_id = db.Column(Integer)
     artist = db.Column(String(80))
     title = db.Column(String(80))
     url = db.Column(String(80))
@@ -31,8 +32,9 @@ class Audio(db.Model):
 
     user = db.relationship('User', back_populates='audios')
 
-    def __init__(self, title, url, user_id, artist):
+    def __init__(self, title, url, user_id, artist, vk_audio_id):
         self.artist = artist
+        self.vk_audio_id = vk_audio_id
         self.title = title
         self.url = url
         self.user_id = user_id

@@ -54,7 +54,10 @@ def update_user_audio(external_id, vk_access_token):
         for a in audios:
             # adding only audios that are not yet present
             if not user_db_audios.filter_by(title=a.get('title'), artist=a.get('artist')).scalar():
-                audio = Audio(title=a.get('title'), artist=a.get('artist'), url=a.get('url'), user_id=user.id)
+                audio = Audio(title=a.get('title'), artist=a.get('artist'),
+                              url=a.get('url'),
+                              vk_audio_id=a.get('vk_audio_id'),
+                              user_id=user.id)
                 db.session.add(audio)
                 flash("updated db with %s-%s" % (a.get('artist'), a.get('title')), category='info')
 
@@ -84,6 +87,7 @@ def get_and_save_user_audios(external_id, vk_access_token, create=True):
             audio = Audio(artist=a.get('artist'),
                           title=a.get('title'),
                           url=a.get('url'),
+                          vk_audio_id=a.get('id'),
                           user_id=current_user.id)
             db.session.add(audio)
 

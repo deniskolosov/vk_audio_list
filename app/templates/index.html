@@ -6,9 +6,33 @@
           integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap-social.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/font-awesome.css') }}">
-    <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js"></script>
+    <script src="{{ url_for('static', filename='js/jquery-3.1.1.min.js') }}"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
             integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous">
+    </script>
+    <script>
+        var ext_user_id = {{ current_user.external_id }};
+        var token = '{{ token }}';
+        $( document ).ready(function() {
+            $(".audio-link").click( function (event) {
+                event.preventDefault();
+                var req="https://api.vk.com/method/audio.getById";
+                $.ajax({
+                    url : req,
+                    type : "GET",
+                    data : {audios: ext_user_id + "_" + $(this).attr('id'), access_token: token, v: "5.57"},
+                    dataType : "jsonp",
+                    success: function (resp) {
+                        resp = resp['response'][0];
+                        var dlUrl = resp['url'];
+                        var audioId = resp['id'];
+                        var a = $("#"+audioId);
+                        a.replaceWith("<a href='" + dlUrl + "' download>" + resp['artist'] + " - " + resp['title'] +  "</a>");
+                    }
+                });
+            }
+            )
+        });
     </script>
     <title>VK Audio list</title>
 </head>
@@ -43,13 +67,17 @@
             <div class="row">
                 <div class="page-header col-md-8">
                     <span>Hello, {{ current_user.username }}!</span><br>
-                    <span>Ваши аудио из ВК (cкачать можно через меню "Сохранить как"):</span>
+                    <span>Ваши аудио из ВК (чтобы скачать, нужно кликнуть два раза по названию):</span>
                 </div>
                 <div class="col-md-8">
                     {%  if audios %}
                         <ul class="list-group">
                             {% for a in audios  %}
-                                <li class="list-group-item"><a href="{{ a['url'] }}" download>{{  a['artist'] }} - {{ a['title'] }}</a></li>
+                                <li class="list-group-item">
+                                    <span class="audio-link" id="{{ a['vk_audio_id'] }}">
+                                        {{  a['artist'] }} - {{ a['title'] }}
+                                    </span>
+                                </li>
                             {% endfor %}
                         </ul>
 
